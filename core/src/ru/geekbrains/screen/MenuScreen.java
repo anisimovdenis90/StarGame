@@ -13,6 +13,9 @@ public class MenuScreen extends BaseScreen {
     private Vector2 touch;
     private Vector2 v;
 
+    private float distance;
+    private float range;
+
     @Override
     public void show() {
         super.show();
@@ -26,6 +29,12 @@ public class MenuScreen extends BaseScreen {
     public void render(float delta) {
         super.render(delta);
         pos.add(v);
+        range += v.len();
+        if (distance - range <= v.len()) {
+            v.set(0, 0);
+            pos.set(touch);
+            range = 0.0f;
+        }
         batch.begin();
         batch.draw(img, pos.x, pos.y);
         batch.end();
@@ -40,6 +49,10 @@ public class MenuScreen extends BaseScreen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         touch.set(screenX, Gdx.graphics.getHeight() - screenY);
+        v.set(touch).sub(pos);
+        distance = v.len();
+        range = 0.0f;
+        v.nor();
         return super.touchDown(screenX, screenY, pointer, button);
     }
 }
