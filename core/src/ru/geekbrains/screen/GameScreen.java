@@ -1,45 +1,39 @@
 package ru.geekbrains.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+
 import ru.geekbrains.base.BaseScreen;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.sprite.Background;
 import ru.geekbrains.sprite.Exit;
-import ru.geekbrains.sprite.Play;
+import ru.geekbrains.sprite.Logo;
 
-public class MenuScreen extends BaseScreen {
+public class GameScreen extends BaseScreen {
 
-    private Game game;
-
+    private Texture img;
     private Texture bg;
     private Texture exit;
-    private Texture play;
     private Background background;
+    private Logo logo;
     private Exit ex;
-    private Play pl;
-
-    public MenuScreen(Game game) {
-        this.game = game;
-    }
 
     @Override
     public void show() {
         super.show();
-        bg = new Texture("textures/bg.png");
+        img = new Texture("textures/mainAtlas.png");
+        bg = new Texture("textures/background.jpg");
         exit = new Texture("textures/menuAtlas.png");
-        play = new Texture("textures/menuAtlas.png");
         background = new Background(bg);
+        logo = new Logo(img);
         ex = new Exit(exit);
-        pl = new Play(play, game);
     }
 
     @Override
     public void resize(Rect worldBounds) {
         background.resize(worldBounds);
+        logo.resize(worldBounds);
         ex.resize(worldBounds);
-        pl.resize(worldBounds);
     }
 
     @Override
@@ -47,23 +41,23 @@ public class MenuScreen extends BaseScreen {
         super.render(delta);
         batch.begin();
         background.draw(batch);
+        logo.draw(batch);
         ex.draw(batch);
-        pl.draw(batch);
         batch.end();
     }
 
     @Override
     public void dispose() {
+        img.dispose();
         bg.dispose();
         exit.dispose();
-        play.dispose();
         super.dispose();
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
+        logo.touchDown(touch, pointer, button);
         ex.touchDown(touch, pointer, button);
-        pl.touchDown(touch, pointer, button);
         return false;
     }
 }
