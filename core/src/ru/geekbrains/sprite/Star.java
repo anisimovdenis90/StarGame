@@ -48,7 +48,7 @@ public class Star extends Sprite {
 
     private void checkBounds() {
         if (getRight() < worldBounds.getLeft()) {
-            setLeft(worldBounds.getHeight());
+            setLeft(worldBounds.getRight());
         }
         if (getLeft() > worldBounds.getRight()) {
             setRight(worldBounds.getLeft());

@@ -16,7 +16,7 @@ public class GameScreen extends BaseScreen {
     @Override
     public void show() {
         super.show();
-        bg = new Texture("textures/background.jpg");
+        bg = new Texture("textures/bg.png");
         background = new Background(bg);
     }
 
