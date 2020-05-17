@@ -1,6 +1,8 @@
 package ru.geekbrains.sprite;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -14,22 +16,23 @@ public class PlayerShip extends Sprite {
     private static final float SIZE = 0.15f;
     private static final float MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
+    private static final float SHOOT_INTERVAL = 0.35f;
 
+    private float shootTimer;
     private final Vector2 v;
     private final Vector2 v0;
 
     private int leftPointer;
     private int rightPointer;
-
     private boolean pressedLeft;
     private boolean pressedRight;
 
     private Rect worldBounds;
-
     private BulletsPool bulletsPool;
     private TextureRegion bulletRegion;
     private Vector2 bulletV;
     private Vector2 bulletPos;
+    private Sound shootSound;
 
     public PlayerShip(TextureAtlas atlas, BulletsPool bulletsPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
@@ -41,6 +44,7 @@ public class PlayerShip extends Sprite {
         v = new Vector2();
         leftPointer = INVALID_POINTER;
         rightPointer = INVALID_POINTER;
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
     }
 
     private void moveRight() {
@@ -66,7 +70,15 @@ public class PlayerShip extends Sprite {
     public void update(float delta) {
         pos.mulAdd(v, delta);
         bulletPos.set(pos.x, pos.y + halfHeight);
+        if ((shootTimer += delta) > SHOOT_INTERVAL) {
+            shoot();
+            shootTimer = 0f;
+        }
         checkBounds();
+    }
+
+    public void dispose() {
+        shootSound.dispose();
     }
 
     @Override
@@ -119,9 +131,6 @@ public class PlayerShip extends Sprite {
                 pressedRight = true;
                 moveRight();
                 break;
-            case Input.Keys.UP:
-                shoot();
-                break;
         }
         return false;
     }
@@ -164,5 +173,6 @@ public class PlayerShip extends Sprite {
     private void shoot() {
         Bullet bullet = bulletsPool.obtain();
         bullet.set(this, bulletRegion, bulletPos, bulletV, 0.01f, worldBounds, 1);
+        shootSound.play(0.3f);
     }
 }
