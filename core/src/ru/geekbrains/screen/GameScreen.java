@@ -27,6 +27,7 @@ public class GameScreen extends BaseScreen {
     private Rect worldBounds;
     private Star[] stars;
     private Music music;
+    private Vector2 enemyV;
 
     @Override
     public void show() {
@@ -41,6 +42,7 @@ public class GameScreen extends BaseScreen {
         }
         bulletsPool = new BulletsPool();
         enemysPool = new EnemysPool();
+        enemyV = new Vector2(0, -0.3f);
         playerShip = new PlayerShip(mainAtlas, bulletsPool);
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         music.setLooping(true);
@@ -59,7 +61,7 @@ public class GameScreen extends BaseScreen {
 
     private void createEnemy() {
         EnemyShip enemyShip = enemysPool.obtain();
-        enemyShip.set(worldBounds, mainAtlas.findRegion("enemy1"), new Vector2(0, -0.3f), 0.15f, 0f);
+        enemyShip.set(worldBounds, mainAtlas.findRegion("enemy1"), enemyV, 0.15f, 0f);
     }
 
     @Override
