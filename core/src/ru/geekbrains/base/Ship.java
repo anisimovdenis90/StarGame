@@ -60,10 +60,12 @@ public class Ship extends Sprite {
     public void update(float delta) {
         super.update(delta);
         pos.mulAdd(v, delta);
-        shootTimer += delta;
-        if (shootTimer > shootInterval) {
-            shoot();
-            shootTimer = 0f;
+        if (isVisible()) {
+            shootTimer += delta;
+            if (shootTimer > shootInterval) {
+                shoot();
+                shootTimer = 0f;
+            }
         }
     }
 

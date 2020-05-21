@@ -15,6 +15,8 @@ public class Sprite extends Rect {
 
     protected boolean destroyed;
 
+    protected boolean visible;
+
     public Sprite() {
 
     }
@@ -75,11 +77,20 @@ public class Sprite extends Rect {
     }
 
     public void destroy() {
+        visible = false;
         destroyed = true;
     }
 
     public void flushDestroy() {
         destroyed = false;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public boolean isDestroyed() {

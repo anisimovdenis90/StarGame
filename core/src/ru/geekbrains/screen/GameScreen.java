@@ -7,11 +7,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.base.BaseScreen;
+import ru.geekbrains.base.Ship;
+import ru.geekbrains.base.Sprite;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletsPool;
 import ru.geekbrains.pool.EnemysPool;
 import ru.geekbrains.pool.ExplosionsPool;
 import ru.geekbrains.sprite.Background;
+import ru.geekbrains.sprite.Bullet;
 import ru.geekbrains.sprite.PlayerShip;
 import ru.geekbrains.sprite.Star;
 import ru.geekbrains.utils.EnemyEmitter;
@@ -89,6 +92,15 @@ public class GameScreen extends BaseScreen {
         explosionsPool.updateActiveSprites(delta);
         playerShip.update(delta);
         enemyEmitter.generate(delta);
+        for (Ship enemyShip : enemysPool.getActiveObjects()) {
+            for (Bullet bullet : bulletsPool.getActiveObjects()) {
+                if (enemyShip.isVisible() && isCollision(enemyShip, playerShip)) {
+                    enemyShip.destroy();
+                } else if (bullet.getOwner() instanceof PlayerShip && isCollision(enemyShip, bullet)) {
+                    enemyShip.destroy();
+                }
+            }
+        }
     }
 
     private void free() {
@@ -107,6 +119,12 @@ public class GameScreen extends BaseScreen {
         playerShip.dispose();
         music.dispose();
         super.dispose();
+    }
+
+    private boolean isCollision(Sprite enemy, Sprite player) {
+        return enemy.getBottom() <= player.getTop() &&
+                ((player.getLeft() >= enemy.getLeft() && player.getLeft() <= enemy.getRight()) ||
+                (player.getRight() >= enemy.getLeft() && player.getRight() <= enemy.getRight()));
     }
 
     @Override

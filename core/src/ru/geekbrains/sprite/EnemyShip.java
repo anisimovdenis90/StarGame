@@ -17,7 +17,14 @@ public class EnemyShip extends Ship {
     @Override
     public void update(float delta) {
         bulletPos.set(pos.x, pos.y - halfHeight);
+        if (!isVisible()) {
+            v.setLength(1f);
+        }
         super.update(delta);
+        if (getTop() <= worldBounds.getTop()) {
+            setVisible(true);
+            v.set(v0);
+        }
         if (getBottom() <= worldBounds.getBottom()) {
             destroy();
         }
