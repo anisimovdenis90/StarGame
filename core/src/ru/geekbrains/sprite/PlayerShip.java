@@ -37,6 +37,7 @@ public class PlayerShip extends Ship {
         shootTimer = shootInterval;
         hp = HP;
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        setVisible(true);
     }
 
     private void moveRight() {
