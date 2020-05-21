@@ -2,49 +2,41 @@ package ru.geekbrains.sprite;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import ru.geekbrains.base.Sprite;
+import ru.geekbrains.base.Ship;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletsPool;
+import ru.geekbrains.pool.ExplosionsPool;
 
-public class PlayerShip extends Sprite {
+public class PlayerShip extends Ship {
 
     private static final float SIZE = 0.15f;
     private static final float MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
-    private static final float SHOOT_INTERVAL = 0.35f;
-
-    private float shootTimer;
-    private final Vector2 v;
-    private final Vector2 v0;
+    private static final int HP = 100;
 
     private int leftPointer;
     private int rightPointer;
     private boolean pressedLeft;
     private boolean pressedRight;
 
-    private Rect worldBounds;
-    private BulletsPool bulletsPool;
-    private TextureRegion bulletRegion;
-    private Vector2 bulletV;
-    private Vector2 bulletPos;
-    private Sound shootSound;
-
-    public PlayerShip(TextureAtlas atlas, BulletsPool bulletsPool) {
+    public PlayerShip(TextureAtlas atlas, BulletsPool bulletsPool, ExplosionsPool explosionsPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletsPool = bulletsPool;
+        this.explosionsPool = explosionsPool;
         bulletRegion = atlas.findRegion("bulletMainShip");
         bulletV = new Vector2(0, 0.5f);
-        bulletPos = new Vector2();
-        v0 = new Vector2(0.5f, 0);
-        v = new Vector2();
+        bulletHeight = 0.01f;
+        bulletDamage = 1;
+        v0.set(0.5f, 0);
         leftPointer = INVALID_POINTER;
         rightPointer = INVALID_POINTER;
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
+        shootInterval = 0.25f;
+        shootTimer = shootInterval;
+        hp = HP;
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
     }
 
     private void moveRight() {
@@ -61,19 +53,15 @@ public class PlayerShip extends Sprite {
 
     @Override
     public void resize(Rect worldBounds) {
-        this.worldBounds = worldBounds;
+        super.resize(worldBounds);
         setHeightProportion(SIZE);
         setBottom(worldBounds.getBottom() + MARGIN);
     }
 
     @Override
     public void update(float delta) {
-        pos.mulAdd(v, delta);
         bulletPos.set(pos.x, pos.y + halfHeight);
-        if ((shootTimer += delta) > SHOOT_INTERVAL) {
-            shoot();
-            shootTimer = 0f;
-        }
+        super.update(delta);
         checkBounds();
     }
 
@@ -168,11 +156,5 @@ public class PlayerShip extends Sprite {
             stop();
             setLeft(worldBounds.getLeft());
         }
-    }
-
-    private void shoot() {
-        Bullet bullet = bulletsPool.obtain();
-        bullet.set(this, bulletRegion, bulletPos, bulletV, 0.01f, worldBounds, 1);
-        shootSound.play(0.3f);
     }
 }

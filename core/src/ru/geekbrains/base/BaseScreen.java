@@ -17,7 +17,7 @@ public class BaseScreen implements Screen, InputProcessor {
     protected SpriteBatch batch;
 
     private Rect screenBounds; // координаты в пикселях
-    private Rect worldBounds; // наша сетка
+    protected Rect worldBounds; // наша сетка
     private Rect glBounds; // OpenGL
 
     private Matrix4 worldToGl;
