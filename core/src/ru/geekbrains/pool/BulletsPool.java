@@ -9,4 +9,8 @@ public class BulletsPool extends SpritesPool<Bullet> {
     protected Bullet newObject() {
         return new Bullet();
     }
+
+    public void reset() {
+        super.dispose();
+    }
 }
