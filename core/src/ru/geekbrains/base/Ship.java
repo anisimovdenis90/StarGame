@@ -12,11 +12,17 @@ import ru.geekbrains.sprite.Explosion;
 
 public class Ship extends Sprite {
 
+    private static final float DAMAGE_ANIMATE_INTERVAL = 0.1f;
+
+    private float damageAnimateTimer;
+
+    protected float shootInterval;
+    protected float shootTimer;
+
     protected final Vector2 v;
     protected final Vector2 v0;
 
     protected Rect worldBounds;
-
     protected ExplosionsPool explosionsPool;
     protected BulletsPool bulletsPool;
     protected TextureRegion bulletRegion;
@@ -24,9 +30,6 @@ public class Ship extends Sprite {
     protected Vector2 bulletPos;
     protected float bulletHeight;
     protected int bulletDamage;
-
-    protected float shootInterval;
-    protected float shootTimer;
 
     protected Sound shootSound;
 
@@ -36,7 +39,9 @@ public class Ship extends Sprite {
         super(region, rows, cols, frames);
         v0 = new Vector2();
         v = new Vector2();
+        bulletV = new Vector2();
         bulletPos = new Vector2();
+        damageAnimateTimer = DAMAGE_ANIMATE_INTERVAL;
     }
 
     public Ship(BulletsPool bulletsPool, ExplosionsPool explosionsPool, Rect worldBounds, Sound shootSound) {
@@ -48,6 +53,7 @@ public class Ship extends Sprite {
         v = new Vector2();
         bulletV = new Vector2();
         bulletPos = new Vector2();
+        damageAnimateTimer = DAMAGE_ANIMATE_INTERVAL;
     }
 
     @Override
@@ -60,25 +66,44 @@ public class Ship extends Sprite {
     public void update(float delta) {
         super.update(delta);
         pos.mulAdd(v, delta);
-        if (isVisible()) {
-            shootTimer += delta;
-            if (shootTimer > shootInterval) {
-                shoot();
-                shootTimer = 0f;
-            }
+        damageAnimateTimer += delta;
+        if (damageAnimateTimer >= DAMAGE_ANIMATE_INTERVAL) {
+            frame = 0;
         }
-    }
-
-    protected void shoot() {
-        Bullet bullet = bulletsPool.obtain();
-        bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, bulletDamage);
-        shootSound.play(0.3f);
     }
 
     @Override
     public void destroy() {
         super.destroy();
         boom();
+    }
+
+    protected void autoShoot(float delta) {
+        shootTimer += delta;
+        if (shootTimer > shootInterval) {
+            shoot();
+            shootTimer = 0f;
+        }
+    }
+
+    private void shoot() {
+        Bullet bullet = bulletsPool.obtain();
+        bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, bulletDamage);
+        shootSound.play(0.3f);
+    }
+
+    public void damage(int damage) {
+        damageAnimateTimer = 0f;
+        frame = 1;
+        hp -= damage;
+        if (hp <= 0) {
+            hp = 0;
+            destroy();
+        }
+    }
+
+    public int getBulletDamage() {
+        return bulletDamage;
     }
 
     private void boom() {

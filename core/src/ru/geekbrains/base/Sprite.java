@@ -8,14 +8,12 @@ import ru.geekbrains.utils.Regions;
 
 public class Sprite extends Rect {
 
-    protected float angle;
+    private float angle;
     protected float scale = 1f;
     protected TextureRegion[] regions;
     protected int frame;
 
-    protected boolean destroyed;
-
-    protected boolean visible;
+    private boolean destroyed;
 
     public Sprite() {
 
@@ -77,22 +75,12 @@ public class Sprite extends Rect {
     }
 
     public void destroy() {
-        visible = false;
         destroyed = true;
     }
 
     public void flushDestroy() {
         destroyed = false;
     }
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
     public boolean isDestroyed() {
         return destroyed;
     }

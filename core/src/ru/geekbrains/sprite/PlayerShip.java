@@ -37,19 +37,6 @@ public class PlayerShip extends Ship {
         shootTimer = shootInterval;
         hp = HP;
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
-        setVisible(true);
-    }
-
-    private void moveRight() {
-        v.set(v0);
-    }
-
-    private void moveLeft() {
-        v.set(v0).rotate(180);
-    }
-
-    private void stop() {
-        v.setZero();
     }
 
     @Override
@@ -61,8 +48,9 @@ public class PlayerShip extends Ship {
 
     @Override
     public void update(float delta) {
-        bulletPos.set(pos.x, pos.y + halfHeight);
         super.update(delta);
+        bulletPos.set(pos.x, pos.y + getHalfHeight());
+        autoShoot(delta);
         checkBounds();
     }
 
@@ -157,5 +145,25 @@ public class PlayerShip extends Ship {
             stop();
             setLeft(worldBounds.getLeft());
         }
+    }
+
+    private void moveRight() {
+        v.set(v0);
+    }
+
+    private void moveLeft() {
+        v.set(v0).rotate(180);
+    }
+
+    private void stop() {
+        v.setZero();
+    }
+
+    public boolean isBulletCollision(Bullet bullet) {
+        return !(bullet.getRight() < getLeft()
+                || bullet.getLeft() > getRight()
+                || bullet.getBottom() > pos.y
+                || bullet.getTop() < getBottom()
+        );
     }
 }
