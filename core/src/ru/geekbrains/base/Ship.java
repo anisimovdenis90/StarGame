@@ -78,14 +78,6 @@ public class Ship extends Sprite {
         boom();
     }
 
-    protected void autoShoot(float delta) {
-        shootTimer += delta;
-        if (shootTimer > shootInterval) {
-            shoot();
-            shootTimer = 0f;
-        }
-    }
-
     private void shoot() {
         Bullet bullet = bulletsPool.obtain();
         bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, bulletDamage);
@@ -104,6 +96,18 @@ public class Ship extends Sprite {
 
     public int getBulletDamage() {
         return bulletDamage;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    protected void autoShoot(float delta) {
+        shootTimer += delta;
+        if (shootTimer > shootInterval) {
+            shoot();
+            shootTimer = 0f;
+        }
     }
 
     private void boom() {

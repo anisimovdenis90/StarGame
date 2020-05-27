@@ -74,12 +74,6 @@ public class MenuScreen extends BaseScreen {
         batch.end();
     }
 
-    private void update(float delta) {
-        for (Star star : stars) {
-            star.update(delta);
-        }
-    }
-
     @Override
     public void dispose() {
         bg.dispose();
@@ -100,5 +94,11 @@ public class MenuScreen extends BaseScreen {
         buttonExit.touchUp(touch, pointer, button);
         buttonPlay.touchUp(touch, pointer, button);
         return false;
+    }
+
+    private void update(float delta) {
+        for (Star star : stars) {
+            star.update(delta);
+        }
     }
 }

@@ -136,6 +136,25 @@ public class PlayerShip extends Ship {
         return false;
     }
 
+    public boolean isBulletCollision(Bullet bullet) {
+        return !(bullet.getRight() < getLeft()
+                || bullet.getLeft() > getRight()
+                || bullet.getBottom() > pos.y
+                || bullet.getTop() < getBottom()
+        );
+    }
+
+    public void reset() {
+        hp = HP;
+        leftPointer = INVALID_POINTER;
+        rightPointer = INVALID_POINTER;
+        pressedLeft = false;
+        pressedRight = false;
+        stop();
+        pos.x = 0f;
+        flushDestroy();
+    }
+
     private void checkBounds() {
         if (getRight() > worldBounds.getRight()) {
             stop();
@@ -157,20 +176,5 @@ public class PlayerShip extends Ship {
 
     private void stop() {
         v.setZero();
-    }
-
-    public boolean isBulletCollision(Bullet bullet) {
-        return !(bullet.getRight() < getLeft()
-                || bullet.getLeft() > getRight()
-                || bullet.getBottom() > pos.y
-                || bullet.getTop() < getBottom()
-        );
-    }
-
-    public void reset() {
-        flushDestroy();
-        hp = HP;
-        pos.set(0, pos.y);
-        v.setLength(0);
     }
 }

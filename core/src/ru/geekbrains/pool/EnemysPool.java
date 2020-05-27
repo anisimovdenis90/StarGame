@@ -31,8 +31,4 @@ public class EnemysPool extends SpritesPool<EnemyShip> {
         super.dispose();
         shootSound.dispose();
     }
-
-    public void reset() {
-        super.dispose();
-    }
 }
