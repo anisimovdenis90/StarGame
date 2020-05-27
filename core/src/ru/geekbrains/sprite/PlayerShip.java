@@ -166,4 +166,11 @@ public class PlayerShip extends Ship {
                 || bullet.getTop() < getBottom()
         );
     }
+
+    public void reset() {
+        flushDestroy();
+        hp = HP;
+        pos.set(0, pos.y);
+        v.setLength(0);
+    }
 }
