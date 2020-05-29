@@ -12,6 +12,10 @@ public class EnemyShip extends Ship {
 
     private static final float V_Y = -0.3f;
 
+    private int scoresForKill;
+
+    private int enemyType;
+
     public EnemyShip(BulletsPool bulletsPool, ExplosionsPool explosionsPool, Rect worldBounds, Sound shootSound) {
         super(bulletsPool, explosionsPool, worldBounds, shootSound);
     }
@@ -38,7 +42,9 @@ public class EnemyShip extends Ship {
             int bulletDamage,
             float shootInterval,
             int hp,
-            float height
+            float height,
+            int scores,
+            int enemyType
     ) {
         this.regions = regions;
         this.v0.set(v0);
@@ -51,6 +57,8 @@ public class EnemyShip extends Ship {
         this.hp = hp;
         setHeightProportion(height);
         this.v.set(0, V_Y);
+        this.scoresForKill = scores;
+        this.enemyType = enemyType;
     }
 
     public boolean isBulletCollision(Bullet bullet) {
@@ -59,5 +67,13 @@ public class EnemyShip extends Ship {
                 || bullet.getBottom() > getTop()
                 || bullet.getTop() < pos.y
         );
+    }
+
+    public int getScoresForKill() {
+        return scoresForKill;
+    }
+
+    public int getType() {
+        return enemyType;
     }
 }

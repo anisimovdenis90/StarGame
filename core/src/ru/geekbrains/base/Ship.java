@@ -58,13 +58,11 @@ public class Ship extends Sprite {
 
     @Override
     public void resize(Rect worldBounds) {
-        super.resize(worldBounds);
         this.worldBounds = worldBounds;
     }
 
     @Override
     public void update(float delta) {
-        super.update(delta);
         pos.mulAdd(v, delta);
         damageAnimateTimer += delta;
         if (damageAnimateTimer >= DAMAGE_ANIMATE_INTERVAL) {
@@ -81,7 +79,7 @@ public class Ship extends Sprite {
     private void shoot() {
         Bullet bullet = bulletsPool.obtain();
         bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, bulletDamage);
-        shootSound.play(0.3f);
+        shootSound.play(0.8f);
     }
 
     public void damage(int damage) {

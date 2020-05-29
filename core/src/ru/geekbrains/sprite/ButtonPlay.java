@@ -11,11 +11,18 @@ public class ButtonPlay extends ScaledButton {
 
     private static final float MARGIN = 0.05f;
 
-    private final Game game;
+    private Game game;
+
+    private GameScreen gameScreen;
 
     public ButtonPlay(TextureAtlas atlas, Game game) {
-        super(atlas.findRegion("btPlay"));
+        super(atlas.findRegion("buttonPlay"));
         this.game = game;
+    }
+
+    public ButtonPlay(TextureAtlas atlas, GameScreen gameScreen) {
+        super(atlas.findRegion("buttonPlay"));
+        this.gameScreen = gameScreen;
     }
 
     @Override
@@ -27,6 +34,10 @@ public class ButtonPlay extends ScaledButton {
 
     @Override
     public void action() {
-        game.setScreen(new GameScreen());
+        if (game != null) {
+            game.setScreen(new GameScreen());
+        } else if (gameScreen != null) {
+            gameScreen.resume();
+        }
     }
 }

@@ -15,6 +15,8 @@ public class Star extends Sprite {
     private float animateTimer;
     private float animateInterval;
 
+    private int oldLevel;
+
     public Star(TextureAtlas atlas) {
         super(atlas.findRegion("star"));
         v = new Vector2();
@@ -22,6 +24,7 @@ public class Star extends Sprite {
         float vy = Rnd.nextFloat(-0.2f, -0.05f);
         v.set(vx, vy);
         worldBounds = new Rect();
+        oldLevel = 1;
     }
 
     @Override
@@ -34,16 +37,23 @@ public class Star extends Sprite {
         animateInterval = Rnd.nextFloat(0.5f, 2f);
     }
 
-    @Override
-    public void update(float delta) {
+    public void update(float delta, int newLevel) {
         setScale(getScale() - 0.008f);
         animateTimer += delta;
         if (animateTimer >= animateInterval) {
             setScale(1f);
             animateTimer = 0f;
         }
+        if (oldLevel != newLevel) {
+            oldLevel = newLevel;
+            v.y = v.y - (float) (oldLevel - 1) / 500;
+        }
         pos.mulAdd(v, delta);
         checkBounds();
+    }
+
+    public void reset() {
+        oldLevel = 1;
     }
 
     private void checkBounds() {

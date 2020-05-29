@@ -2,31 +2,40 @@ package ru.geekbrains.sprite;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.base.Ship;
+import ru.geekbrains.base.Sprite;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletsPool;
 import ru.geekbrains.pool.ExplosionsPool;
 
 public class PlayerShip extends Ship {
 
-    private static final float SIZE = 0.15f;
+    private static final float SIZE = 0.2f;
     private static final float MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
     private static final int HP = 100;
+    private static final int ADD_HP = 30;
+    private static final float SUPER_SHOOT_INTERVAL_MAX = 10f;
 
     private int leftPointer;
     private int rightPointer;
     private boolean pressedLeft;
     private boolean pressedRight;
 
+    private float superShootTimer;
+    private float superShootInterval;
+
+    private Sound superShootSound;
+
     public PlayerShip(TextureAtlas atlas, BulletsPool bulletsPool, ExplosionsPool explosionsPool) {
-        super(atlas.findRegion("main_ship"), 1, 2, 2);
+        super(atlas.findRegion("playerShip"), 1, 3, 3);
         this.bulletsPool = bulletsPool;
         this.explosionsPool = explosionsPool;
-        bulletRegion = atlas.findRegion("bulletMainShip");
+        bulletRegion = atlas.findRegion("bulletPlayerShip");
         bulletV = new Vector2(0, 0.5f);
         bulletHeight = 0.01f;
         bulletDamage = 1;
@@ -37,6 +46,7 @@ public class PlayerShip extends Ship {
         shootTimer = shootInterval;
         hp = HP;
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        superShootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/superLaser.mp3"));
     }
 
     @Override
@@ -50,12 +60,30 @@ public class PlayerShip extends Ship {
     public void update(float delta) {
         super.update(delta);
         bulletPos.set(pos.x, pos.y + getHalfHeight());
-        autoShoot(delta);
+        if (superShootInterval > 0) {
+            autoSuperShoot(delta);
+        } else {
+            autoShoot(delta);
+        }
         checkBounds();
+    }
+
+    public void activeSuperShoot() {
+        if (superShootInterval > 0) {
+            superShootInterval += SUPER_SHOOT_INTERVAL_MAX;
+        } else {
+            superShootInterval = SUPER_SHOOT_INTERVAL_MAX;
+        }
+    }
+
+    public void addHp() {
+        int newHp = hp + ADD_HP;
+        hp = Math.min(newHp, HP);
     }
 
     public void dispose() {
         shootSound.dispose();
+        superShootSound.dispose();
     }
 
     @Override
@@ -136,11 +164,11 @@ public class PlayerShip extends Ship {
         return false;
     }
 
-    public boolean isBulletCollision(Bullet bullet) {
-        return !(bullet.getRight() < getLeft()
-                || bullet.getLeft() > getRight()
-                || bullet.getBottom() > pos.y
-                || bullet.getTop() < getBottom()
+    public boolean isCollision(Sprite sprite) {
+        return !(sprite.getRight() < getLeft()
+                || sprite.getLeft() > getRight()
+                || sprite.getBottom() > pos.y
+                || sprite.getTop() < getBottom()
         );
     }
 
@@ -155,6 +183,14 @@ public class PlayerShip extends Ship {
         flushDestroy();
     }
 
+    public void activateBonus(Bonus bonus) {
+        if (bonus.getBonusType() == 0) {
+            addHp();
+        } else if (bonus.getBonusType() == 1) {
+            activeSuperShoot();
+        }
+    }
+
     private void checkBounds() {
         if (getRight() > worldBounds.getRight()) {
             stop();
@@ -163,6 +199,31 @@ public class PlayerShip extends Ship {
         if (getLeft() < worldBounds.getLeft()) {
             stop();
             setLeft(worldBounds.getLeft());
+        }
+    }
+
+    private void autoSuperShoot(float delta) {
+        if ((superShootTimer += delta) < superShootInterval) {
+            superShoot(delta);
+        } else {
+            superShootTimer = 0f;
+            superShootInterval = 0f;
+        }
+    }
+
+    private void superShoot(float delta) {
+        shootTimer += delta;
+        if (shootTimer > shootInterval) {
+            Bullet bullet1 = bulletsPool.obtain();
+            Bullet bullet2 = bulletsPool.obtain();
+            Bullet bullet3 = bulletsPool.obtain();
+            Vector2 bulletV2 = bulletV.cpy().set(0.1f, bulletV.y);
+            Vector2 bulletV3 = bulletV.cpy().set(-0.1f, bulletV.y);
+            bullet1.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, bulletDamage);
+            bullet2.set(this, bulletRegion, bulletPos, bulletV2, bulletHeight, worldBounds, bulletDamage);
+            bullet3.set(this, bulletRegion, bulletPos, bulletV3, bulletHeight, worldBounds, bulletDamage);
+            superShootSound.play(0.5f);
+            shootTimer = 0f;
         }
     }
 

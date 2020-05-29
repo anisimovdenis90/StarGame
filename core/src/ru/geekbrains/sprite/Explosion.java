@@ -8,21 +8,21 @@ import ru.geekbrains.base.Sprite;
 
 public class Explosion extends Sprite {
 
-    private static final float ANIMATE_INTERVAL = 0.017f;
+    private static final float ANIMATE_INTERVAL = 0.02f;
 
     private float animateTimer;
 
     private Sound sound;
 
     public Explosion(TextureAtlas atlas, Sound sound) {
-        super(atlas.findRegion("explosion"), 9, 9, 74);
+        super(atlas.findRegion("explosion"), 4, 8, 30);
         this.sound = sound;
     }
 
     public void set(float height, Vector2 pos) {
         setHeightProportion(height);
         this.pos.set(pos);
-        sound.play();
+        sound.play(0.3f);
         frame = 0;
     }
 

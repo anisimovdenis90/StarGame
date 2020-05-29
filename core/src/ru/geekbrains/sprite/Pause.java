@@ -5,15 +5,15 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import ru.geekbrains.base.Sprite;
 import ru.geekbrains.math.Rect;
 
-public class GameOver extends Sprite {
+public class Pause extends Sprite {
 
-    public GameOver(TextureAtlas atlas) {
-        super(atlas.findRegion("messageGameOver"));
+    public Pause(TextureAtlas atlas) {
+        super(atlas.findRegion("messagePause"));
     }
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(0.14f);
+        setHeightProportion(0.18f);
         setTop(0.2f);
     }
 }
