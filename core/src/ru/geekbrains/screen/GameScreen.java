@@ -20,11 +20,11 @@ import ru.geekbrains.sprite.Background;
 import ru.geekbrains.sprite.Bonus;
 import ru.geekbrains.sprite.Bullet;
 import ru.geekbrains.sprite.ButtonExit;
+import ru.geekbrains.sprite.ButtonNewGame;
 import ru.geekbrains.sprite.ButtonPause;
 import ru.geekbrains.sprite.ButtonPlay;
 import ru.geekbrains.sprite.EnemyShip;
 import ru.geekbrains.sprite.GameOver;
-import ru.geekbrains.sprite.ButtonNewGame;
 import ru.geekbrains.sprite.HealthBar;
 import ru.geekbrains.sprite.Pause;
 import ru.geekbrains.sprite.PlayerShip;
@@ -34,24 +34,21 @@ import ru.geekbrains.utils.EnemyEmitter;
 
 public class GameScreen extends BaseScreen {
 
-    private static final float TEXT_MARGIN = 0.01f;
-    private static final float FONT_SIZE = 0.015f;
-    private static final String SCORES = "Scores: ";
-    private static final String HP = "HP: ";
-    private static final String LEVEL = "Level: ";
-
-    private int scores;
-    private int oldLevel;
-
-    public GameScreen() {
-    }
-
-    private enum State {
+    public enum State {
         PLAYING,
         PAUSE,
         GAME_OVER
     }
 
+    private static final float TEXT_MARGIN = 0.01f;
+    private static final float FONT_INFO_SIZE = 0.015f;
+    private static final float FONT_SCORES_SIZE = 0.02f;
+    private static final float FONT_RESULT_SIZE = 0.03f;
+    private static final String SCORES = "Scores: ";
+    private static final String HP = "HP: ";
+    private static final String LEVEL = "Level: ";
+
+    private int scores;
     private Texture bg;
     private Background background;
     private TextureAtlas atlas;
@@ -75,9 +72,11 @@ public class GameScreen extends BaseScreen {
     private StringBuilder sbScores;
     private StringBuilder sbHp;
     private StringBuilder sbLevel;
-
     private BonusPool bonusPool;
     private BonusEmitter bonusEmitter;
+
+    public GameScreen() {
+    }
 
     @Override
     public void pause() {
@@ -94,8 +93,8 @@ public class GameScreen extends BaseScreen {
         super.show();
         bg = new Texture("textures/bg.png");
         background = new Background(bg);
-        atlas = new TextureAtlas(Gdx.files.internal("textures/main_atlas.atlas"));
-        menuAtlas = new TextureAtlas(Gdx.files.internal("textures/menu_atlas.atlas"));
+        atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.atlas"));
+        menuAtlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.atlas"));
         stars = new Star[64];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(menuAtlas);
@@ -122,7 +121,6 @@ public class GameScreen extends BaseScreen {
         music.setLooping(true);
         music.play();
         state = State.PLAYING;
-        oldLevel = 1;
     }
 
     @Override
@@ -141,7 +139,7 @@ public class GameScreen extends BaseScreen {
         buttonExit.resize(worldBounds);
         buttonResume.resize(worldBounds);
         buttonPause.resize(worldBounds);
-        font.setSize(FONT_SIZE);
+        font.setSize(FONT_INFO_SIZE);
     }
 
     @Override
@@ -208,6 +206,11 @@ public class GameScreen extends BaseScreen {
     public boolean keyDown(int keycode) {
         if (state == State.PLAYING) {
             playerShip.keyDown(keycode);
+            buttonPause.keyDown(keycode);
+        } else if (state == State.PAUSE) {
+            buttonResume.keyDown(keycode);
+        } else if (state == State.GAME_OVER) {
+            buttonNewGame.keyDown(keycode);
         }
         return false;
     }
@@ -216,6 +219,11 @@ public class GameScreen extends BaseScreen {
     public boolean keyUp(int keycode) {
         if (state == State.PLAYING) {
             playerShip.keyUp(keycode);
+            buttonPause.keyUp(keycode);
+        } else if (state == State.PAUSE) {
+            buttonResume.keyUp(keycode);
+        } else if (state == State.GAME_OVER) {
+            buttonNewGame.keyUp(keycode);
         }
         return false;
     }
@@ -304,8 +312,8 @@ public class GameScreen extends BaseScreen {
                     enemyShip.damage(bullet.getDamage());
                     bullet.destroy();
                     if (enemyShip.isDestroyed()) {
-                        scores += enemyShip.getScoresForKill();
                         bonusEmitter.generate(enemyShip);
+                        scores += enemyShip.getScoresForKill();
                     }
                 }
             }
@@ -341,15 +349,18 @@ public class GameScreen extends BaseScreen {
         sbScores.setLength(0);
         sbHp.setLength(0);
         sbLevel.setLength(0);
-        font.draw(batch, sbScores.append(SCORES).append(scores), worldBounds.getLeft() + 0.118f, worldBounds.getTop() - 0.038f);
-        font.draw(batch, sbHp.append(HP).append(playerShip.getHp()), worldBounds.getLeft() + 0.013f, worldBounds.getTop() - 0.037f);
-        font.draw(batch, sbLevel.append(LEVEL).append(enemyEmitter.getLevel()), worldBounds.pos.x, worldBounds.getTop() - TEXT_MARGIN, Align.center);
+        font.setSize(FONT_INFO_SIZE);
+        font.draw(batch, sbHp.append(HP).append(playerShip.getHp()), worldBounds.getLeft() + 0.015f, worldBounds.getTop() - 0.037f);
+        font.draw(batch, sbLevel.append(LEVEL).append(enemyEmitter.getLevel()), worldBounds.getLeft() + 0.13f, worldBounds.getTop() - 0.038f);
+        font.setSize(FONT_SCORES_SIZE);
+        font.draw(batch, sbScores.append(SCORES).append(scores), worldBounds.pos.x, worldBounds.getTop() - TEXT_MARGIN);
     }
 
     private void printResult() {
         sbScores.setLength(0);
         sbLevel.setLength(0);
-        font.draw(batch, sbScores.append(SCORES).append(scores), worldBounds.pos.x, worldBounds.getTop() - 0.15f, Align.center);
+        font.setSize(FONT_RESULT_SIZE);
         font.draw(batch, sbLevel.append(LEVEL).append(enemyEmitter.getLevel()), worldBounds.pos.x, worldBounds.getTop() - 0.1f, Align.center);
+        font.draw(batch, sbScores.append(SCORES).append(scores), worldBounds.pos.x, worldBounds.getTop() - 0.18f, Align.center);
     }
 }

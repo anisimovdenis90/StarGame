@@ -12,7 +12,7 @@ import ru.geekbrains.sprite.EnemyShip;
 public class EnemyEmitter {
 
     private static final float GENERATE_INTERVAL = 4f;
-    private static final float GENERATE_INTERVAL_MIN = 2.5f;
+    private static final float GENERATE_INTERVAL_MIN = 2f;
     private static final int SCORES_TO_NEXT_LEVEL = 1000;
 
     private static final int ENEMY_SMALL_SCORE = 10;
@@ -21,15 +21,13 @@ public class EnemyEmitter {
 
     private static final float ENEMY_SMALL_HEIGHT = 0.1f;
     private static final int ENEMY_SMALL_HP = 1;
-    private static final int ENEMY_SMALL_TYPE = 0;
-    private static final float ENEMY_SMALL_BULLET_HEIGHT = 0.01f;
+    private static final float ENEMY_SMALL_BULLET_HEIGHT = 0.011f;
     private static final float ENEMY_SMALL_BULLET_VY = -0.3f;
     private static final int ENEMY_SMALL_BULLET_DAMAGE = 1;
     private static final float ENEMY_SMALL_SHOOT_INTERVAL = 3f;
 
     private static final float ENEMY_MEDIUM_HEIGHT = 0.15f;
     private static final int ENEMY_MEDIUM_HP = 5;
-    private static final int ENEMY_MEDIUM_TYPE = 1;
     private static final float ENEMY_MEDIUM_BULLET_HEIGHT = 0.02f;
     private static final float ENEMY_MEDIUM_BULLET_VY = -0.25f;
     private static final int ENEMY_MEDIUM_BULLET_DAMAGE = 5;
@@ -37,7 +35,6 @@ public class EnemyEmitter {
 
     private static final float ENEMY_BIG_HEIGHT = 0.25f;
     private static final int ENEMY_BIG_HP = 10;
-    private static final int ENEMY_BIG_TYPE = 2;
     private static final float ENEMY_BIG_BULLET_HEIGHT = 0.04f;
     private static final float ENEMY_BIG_BULLET_VY = -0.3f;
     private static final int ENEMY_BIG_BULLET_DAMAGE = 10;
@@ -100,7 +97,7 @@ public class EnemyEmitter {
                         ENEMY_SMALL_HP,
                         ENEMY_SMALL_HEIGHT,
                         ENEMY_SMALL_SCORE,
-                        ENEMY_SMALL_TYPE
+                        EnemyShip.EnemyType.SMALL
                 );
             } else if (type < 0.8f) {
                 enemyShip.set(
@@ -114,7 +111,7 @@ public class EnemyEmitter {
                         ENEMY_MEDIUM_HP,
                         ENEMY_MEDIUM_HEIGHT,
                         ENEMY_MEDIUM_SCORE,
-                        ENEMY_MEDIUM_TYPE
+                        EnemyShip.EnemyType.MEDIUM
                 );
             } else {
                 enemyShip.set(
@@ -128,7 +125,7 @@ public class EnemyEmitter {
                         ENEMY_BIG_HP,
                         ENEMY_BIG_HEIGHT,
                         ENEMY_BIG_SCORE,
-                        ENEMY_BIG_TYPE
+                        EnemyShip.EnemyType.BIG
                 );
             }
             enemyShip.pos.x = Rnd.nextFloat(worldBounds.getLeft() + enemyShip.getHalfWidth(), worldBounds.getRight() - enemyShip.getHalfWidth());

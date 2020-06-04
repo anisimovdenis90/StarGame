@@ -1,0 +1,111 @@
+
+mainAtlas.png
+size: 2048,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bonusFirstAid
+  rotate: false
+  xy: 1058, 35
+  size: 168, 162
+  orig: 168, 162
+  offset: 0, 0
+  index: -1
+bonusSuperShoot
+  rotate: false
+  xy: 1058, 199
+  size: 163, 162
+  orig: 163, 162
+  offset: 0, 0
+  index: -1
+bulletEnemy
+  rotate: false
+  xy: 1028, 1343
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+bulletPlayerShip
+  rotate: false
+  xy: 2, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttonNewGame
+  rotate: false
+  xy: 1028, 1595
+  size: 678, 156
+  orig: 678, 156
+  offset: 0, 0
+  index: -1
+buttonPause
+  rotate: false
+  xy: 1624, 1778
+  size: 89, 89
+  orig: 89, 89
+  offset: 0, 0
+  index: -1
+enemyBig
+  rotate: false
+  xy: 2, 363
+  size: 1166, 447
+  orig: 1166, 447
+  offset: 0, 0
+  index: -1
+enemyMedium
+  rotate: false
+  xy: 2, 20
+  size: 1054, 341
+  orig: 1054, 341
+  offset: 0, 0
+  index: -1
+enemySmall
+  rotate: false
+  xy: 1028, 1753
+  size: 594, 286
+  orig: 594, 286
+  offset: 0, 0
+  index: -1
+explosion
+  rotate: false
+  xy: 2, 1271
+  size: 1024, 768
+  orig: 1024, 768
+  offset: 0, 0
+  index: -1
+healthBar
+  rotate: false
+  xy: 1028, 1361
+  size: 354, 81
+  orig: 354, 81
+  offset: 0, 0
+  index: -1
+healthBarFiller
+  rotate: false
+  xy: 1624, 1869
+  size: 288, 25
+  orig: 288, 25
+  offset: 0, 0
+  index: -1
+messageGameOver
+  rotate: false
+  xy: 1028, 1444
+  size: 697, 149
+  orig: 697, 149
+  offset: 0, 0
+  index: -1
+messagePause
+  rotate: false
+  xy: 1624, 1896
+  size: 409, 143
+  orig: 409, 143
+  offset: 0, 0
+  index: -1
+playerShip
+  rotate: false
+  xy: 2, 812
+  size: 1146, 457
+  orig: 1146, 457
+  offset: 0, 0
+  index: -1

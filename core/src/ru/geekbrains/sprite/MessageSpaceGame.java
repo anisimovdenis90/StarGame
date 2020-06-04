@@ -7,13 +7,16 @@ import ru.geekbrains.math.Rect;
 
 public class MessageSpaceGame extends Sprite {
 
+    private static final float HEIGHT = 0.35f;
+    private static final float MARGIN = 0.3f;
+
     public MessageSpaceGame(TextureAtlas atlas) {
         super(atlas.findRegion("messageSpaceGame"));
     }
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(0.35f);
-        setTop(0.3f);
+        setHeightProportion(HEIGHT);
+        setTop(MARGIN);
     }
 }

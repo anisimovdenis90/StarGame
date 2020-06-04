@@ -14,12 +14,22 @@ import ru.geekbrains.pool.ExplosionsPool;
 
 public class PlayerShip extends Ship {
 
-    private static final float SIZE = 0.2f;
+    private static final float HEIGHT = 0.22f;
     private static final float MARGIN = 0.05f;
-    private static final int INVALID_POINTER = -1;
-    private static final int HP = 100;
+    private static final int MAX_HP = 100;
     private static final int ADD_HP = 30;
-    private static final float SUPER_SHOOT_INTERVAL_MAX = 10f;
+    private static final float BULLET_V_Y = 0.5f;
+    private static final float BULLET_HEIGHT = 0.01f;
+    private static final int BULLET_DAMAGE = 1;
+    private static final float SHOOT_INTERVAL = 0.25f;
+    private static final float SUPER_SHOOT_TIME_LIMIT_MAX = 10f;
+    private static final float SUPER_SHOOT_SOUND_VOLUME = 0.45f;
+    private static final float SHOOT_SOUND_VOLUME = 0.8f;
+    private static final float DAMAGE_SOUND_VOLUME = 1.5f;
+    private static final int INVALID_POINTER = -1;
+
+    private Vector2 bulletV2;
+    private Vector2 bulletV3;
 
     private int leftPointer;
     private int rightPointer;
@@ -30,29 +40,37 @@ public class PlayerShip extends Ship {
     private float superShootInterval;
 
     private Sound superShootSound;
+    private Sound damageSound;
 
     public PlayerShip(TextureAtlas atlas, BulletsPool bulletsPool, ExplosionsPool explosionsPool) {
         super(atlas.findRegion("playerShip"), 1, 3, 3);
         this.bulletsPool = bulletsPool;
         this.explosionsPool = explosionsPool;
         bulletRegion = atlas.findRegion("bulletPlayerShip");
-        bulletV = new Vector2(0, 0.5f);
-        bulletHeight = 0.01f;
-        bulletDamage = 1;
+        bulletV = new Vector2(0, BULLET_V_Y);
+        bulletV2 = new Vector2(-0.1f, BULLET_V_Y);
+        bulletV3 = new Vector2(0.1f, BULLET_V_Y);
+        bulletHeight = BULLET_HEIGHT;
+        bulletDamage = BULLET_DAMAGE;
         v0.set(0.5f, 0);
         leftPointer = INVALID_POINTER;
         rightPointer = INVALID_POINTER;
-        shootInterval = 0.25f;
+        shootInterval = SHOOT_INTERVAL;
         shootTimer = shootInterval;
-        hp = HP;
+        hp = MAX_HP;
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         superShootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/superLaser.mp3"));
+        damageSound = Gdx.audio.newSound(Gdx.files.internal("sounds/damage.wav"));
+    }
+
+    public static int getMaxHp() {
+        return MAX_HP;
     }
 
     @Override
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
-        setHeightProportion(SIZE);
+        setHeightProportion(HEIGHT);
         setBottom(worldBounds.getBottom() + MARGIN);
     }
 
@@ -63,27 +81,22 @@ public class PlayerShip extends Ship {
         if (superShootInterval > 0) {
             autoSuperShoot(delta);
         } else {
-            autoShoot(delta);
+            autoShoot(delta, SHOOT_SOUND_VOLUME);
         }
         checkBounds();
     }
 
-    public void activeSuperShoot() {
-        if (superShootInterval > 0) {
-            superShootInterval += SUPER_SHOOT_INTERVAL_MAX;
-        } else {
-            superShootInterval = SUPER_SHOOT_INTERVAL_MAX;
-        }
-    }
-
-    public void addHp() {
+    public void addHealth() {
+        setAnimateTimer(0f);
+        frame = 2;
         int newHp = hp + ADD_HP;
-        hp = Math.min(newHp, HP);
+        hp = Math.min(newHp, MAX_HP);
     }
 
     public void dispose() {
         shootSound.dispose();
         superShootSound.dispose();
+        damageSound.dispose();
     }
 
     @Override
@@ -172,8 +185,14 @@ public class PlayerShip extends Ship {
         );
     }
 
+    @Override
+    public void damage(int damage) {
+        damageSound.play(DAMAGE_SOUND_VOLUME);
+        super.damage(damage);
+    }
+
     public void reset() {
-        hp = HP;
+        hp = MAX_HP;
         leftPointer = INVALID_POINTER;
         rightPointer = INVALID_POINTER;
         pressedLeft = false;
@@ -184,10 +203,20 @@ public class PlayerShip extends Ship {
     }
 
     public void activateBonus(Bonus bonus) {
-        if (bonus.getBonusType() == 0) {
-            addHp();
-        } else if (bonus.getBonusType() == 1) {
-            activeSuperShoot();
+        if (Bonus.BonusType.FIRST_AID.equals(bonus.getBonusType())) {
+            addHealth();
+            System.out.println("FirstAid apply");
+        } else if (Bonus.BonusType.SUPER_SHOOT.equals(bonus.getBonusType())) {
+            activateSuperShoot();
+            System.out.println("SuperShoot apply");
+        }
+    }
+
+    public void activateSuperShoot() {
+        if (superShootInterval > 0) {
+            superShootInterval += SUPER_SHOOT_TIME_LIMIT_MAX;
+        } else {
+            superShootInterval = SUPER_SHOOT_TIME_LIMIT_MAX;
         }
     }
 
@@ -217,12 +246,10 @@ public class PlayerShip extends Ship {
             Bullet bullet1 = bulletsPool.obtain();
             Bullet bullet2 = bulletsPool.obtain();
             Bullet bullet3 = bulletsPool.obtain();
-            Vector2 bulletV2 = bulletV.cpy().set(0.1f, bulletV.y);
-            Vector2 bulletV3 = bulletV.cpy().set(-0.1f, bulletV.y);
             bullet1.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, bulletDamage);
             bullet2.set(this, bulletRegion, bulletPos, bulletV2, bulletHeight, worldBounds, bulletDamage);
             bullet3.set(this, bulletRegion, bulletPos, bulletV3, bulletHeight, worldBounds, bulletDamage);
-            superShootSound.play(0.5f);
+            superShootSound.play(SUPER_SHOOT_SOUND_VOLUME);
             shootTimer = 0f;
         }
     }

@@ -9,6 +9,9 @@ import ru.geekbrains.math.Rnd;
 
 public class Star extends Sprite {
 
+    private static final float HEIGHT = 0.01f;
+    private static final float ANIMATION_SCALE_STEP = 0.008f;
+
     private Vector2 v;
     private Rect worldBounds;
 
@@ -30,7 +33,7 @@ public class Star extends Sprite {
     @Override
     public void resize(Rect worldBounds) {
         this.worldBounds = worldBounds;
-        setHeightProportion(0.01f);
+        setHeightProportion(HEIGHT);
         float posX = Rnd.nextFloat(worldBounds.getLeft(), worldBounds.getRight());
         float posY = Rnd.nextFloat(worldBounds.getBottom(), worldBounds.getTop());
         pos.set(posX, posY);
@@ -38,7 +41,7 @@ public class Star extends Sprite {
     }
 
     public void update(float delta, int newLevel) {
-        setScale(getScale() - 0.008f);
+        setScale(getScale() - ANIMATION_SCALE_STEP);
         animateTimer += delta;
         if (animateTimer >= animateInterval) {
             setScale(1f);

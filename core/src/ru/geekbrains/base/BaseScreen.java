@@ -15,9 +15,8 @@ import ru.geekbrains.math.Rect;
 public class BaseScreen implements Screen, InputProcessor {
 
     protected SpriteBatch batch;
-
-    private Rect screenBounds; // координаты в пикселях
     protected Rect worldBounds; // наша сетка
+    private Rect screenBounds; // координаты в пикселях
     private Rect glBounds; // OpenGL
 
     private Matrix4 worldToGl;

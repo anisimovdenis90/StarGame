@@ -20,9 +20,6 @@ public class BonusEmitter {
     private final TextureRegion firstAidRegion;
     private final TextureRegion superShootRegion;
 
-    private static final int FIRST_AID_TYPE = 0;
-    private static final int SUPER_SHOOT_TYPE = 1;
-
     public BonusEmitter(TextureAtlas atlas, BonusPool bonusPool) {
         firstAidRegion = atlas.findRegion("bonusFirstAid");
         superShootRegion = atlas.findRegion("bonusSuperShoot");
@@ -35,13 +32,16 @@ public class BonusEmitter {
     }
 
     public void generate(EnemyShip enemyShip) {
+        System.out.println("Call generate");
         float type = (float) Math.random();
-        if (enemyShip.getType() == 2 && type < 0.8f) {
+        if (EnemyShip.EnemyType.BIG.equals(enemyShip.getType()) && type < 0.7f) {
             Bonus bonus = bonusPool.obtain();
-            if (type <= 0.2f) {
-                bonus.set(firstAidRegion, FIRST_AID_TYPE, enemyShip.pos);
+            if (type < 0.2f) {
+                bonus.set(firstAidRegion, Bonus.BonusType.FIRST_AID, enemyShip.pos);
+                System.out.println("FirstAid generated");
             } else {
-                bonus.set(superShootRegion, SUPER_SHOOT_TYPE, enemyShip.pos);
+                bonus.set(superShootRegion, Bonus.BonusType.SUPER_SHOOT, enemyShip.pos);
+                System.out.println("SuperShoot generated");
             }
         }
     }
@@ -54,7 +54,7 @@ public class BonusEmitter {
             float posX = Rnd.nextFloat(worldBounds.getLeft() + bonus.getHalfWidth(), worldBounds.getRight() - bonus.getHalfWidth());
             float posY = worldBounds.getTop() + bonus.getHeight();
             pos0.set(posX, posY);
-            bonus.set(firstAidRegion, FIRST_AID_TYPE, pos0);
+            bonus.set(firstAidRegion, Bonus.BonusType.FIRST_AID, pos0);
         }
     }
 

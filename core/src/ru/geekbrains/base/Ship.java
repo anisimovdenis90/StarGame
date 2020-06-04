@@ -12,16 +12,12 @@ import ru.geekbrains.sprite.Explosion;
 
 public class Ship extends Sprite {
 
-    private static final float DAMAGE_ANIMATE_INTERVAL = 0.1f;
-
-    private float damageAnimateTimer;
-
-    protected float shootInterval;
-    protected float shootTimer;
+    private static final float DAMAGE_ANIMATE_INTERVAL = 0.12f;
 
     protected final Vector2 v;
     protected final Vector2 v0;
-
+    protected float shootInterval;
+    protected float shootTimer;
     protected Rect worldBounds;
     protected ExplosionsPool explosionsPool;
     protected BulletsPool bulletsPool;
@@ -30,10 +26,9 @@ public class Ship extends Sprite {
     protected Vector2 bulletPos;
     protected float bulletHeight;
     protected int bulletDamage;
-
     protected Sound shootSound;
-
     protected int hp;
+    private float damageAnimateTimer;
 
     public Ship(TextureRegion region, int rows, int cols, int frames) {
         super(region, rows, cols, frames);
@@ -56,6 +51,18 @@ public class Ship extends Sprite {
         damageAnimateTimer = DAMAGE_ANIMATE_INTERVAL;
     }
 
+    public void setAnimateTimer(float damageAnimateTimer) {
+        this.damageAnimateTimer = damageAnimateTimer;
+    }
+
+    public int getBulletDamage() {
+        return bulletDamage;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
     @Override
     public void resize(Rect worldBounds) {
         this.worldBounds = worldBounds;
@@ -76,10 +83,10 @@ public class Ship extends Sprite {
         boom();
     }
 
-    private void shoot() {
+    private void shoot(float shootVolume) {
         Bullet bullet = bulletsPool.obtain();
         bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, bulletDamage);
-        shootSound.play(0.8f);
+        shootSound.play(shootVolume);
     }
 
     public void damage(int damage) {
@@ -92,18 +99,10 @@ public class Ship extends Sprite {
         }
     }
 
-    public int getBulletDamage() {
-        return bulletDamage;
-    }
-
-    public int getHp() {
-        return hp;
-    }
-
-    protected void autoShoot(float delta) {
+    protected void autoShoot(float delta, float shootVolume) {
         shootTimer += delta;
         if (shootTimer > shootInterval) {
-            shoot();
+            shoot(shootVolume);
             shootTimer = 0f;
         }
     }

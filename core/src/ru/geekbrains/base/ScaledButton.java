@@ -5,13 +5,30 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class ScaledButton extends Sprite {
 
-    private static final float SCALE = 0.9f;
+    private static final float PRESSED_SCALE = 0.9f;
+    private static final float DEFAULT_SCALE = 1f;
 
     private boolean pressed;
     private int pointer;
 
     public ScaledButton(TextureRegion region) {
         super(region);
+    }
+
+    public static float getPressedScale() {
+        return PRESSED_SCALE;
+    }
+
+    public static float getDefaultScale() {
+        return DEFAULT_SCALE;
+    }
+
+    public boolean isPressed() {
+        return pressed;
+    }
+
+    public void setPressed(boolean pressed) {
+        this.pressed = pressed;
     }
 
     public abstract void action();
@@ -23,7 +40,7 @@ public abstract class ScaledButton extends Sprite {
         }
         this.pointer = pointer;
         pressed = true;
-        scale = SCALE;
+        scale = PRESSED_SCALE;
         return false;
     }
 
@@ -36,7 +53,7 @@ public abstract class ScaledButton extends Sprite {
             action();
         }
         pressed = false;
-        scale = 1f;
+        scale = DEFAULT_SCALE;
         return false;
     }
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+
 import ru.geekbrains.base.BaseScreen;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.sprite.Background;
@@ -39,7 +40,7 @@ public class MenuScreen extends BaseScreen {
         super.show();
         bg = new Texture("textures/bg.png");
         background = new Background(bg);
-        atlas = new TextureAtlas(Gdx.files.internal("textures/menu_atlas.atlas"));
+        atlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.atlas"));
         messageSpaceGame = new MessageSpaceGame(atlas);
         buttonExit = new ButtonExit(atlas);
         buttonPlay = new ButtonPlay(atlas, game);
@@ -98,6 +99,18 @@ public class MenuScreen extends BaseScreen {
     public boolean touchUp(Vector2 touch, int pointer, int button) {
         buttonExit.touchUp(touch, pointer, button);
         buttonPlay.touchUp(touch, pointer, button);
+        return false;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        buttonPlay.keyDown(keycode);
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        buttonPlay.keyUp(keycode);
         return false;
     }
 
