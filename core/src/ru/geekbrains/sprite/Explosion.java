@@ -9,7 +9,7 @@ import ru.geekbrains.base.Sprite;
 public class Explosion extends Sprite {
 
     private static final float ANIMATE_INTERVAL = 0.017f;
-    private static final float EXPLOSION_SOUND_VOLUME = 0.3f;
+    private static final float EXPLOSION_SOUND_VOLUME = 0.4f;
 
     private float animateTimer;
 

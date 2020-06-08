@@ -12,8 +12,6 @@ import ru.geekbrains.sprite.EnemyShip;
 
 public class BonusEmitter {
 
-    private int oldLevel;
-
     private Rect worldBounds;
     private BonusPool bonusPool;
 
@@ -24,7 +22,6 @@ public class BonusEmitter {
         firstAidRegion = atlas.findRegion("bonusFirstAid");
         superShootRegion = atlas.findRegion("bonusSuperShoot");
         this.bonusPool = bonusPool;
-        oldLevel = 1;
     }
 
     public void resize(Rect worldBounds) {
@@ -46,19 +43,12 @@ public class BonusEmitter {
         }
     }
 
-    public void generate(int level) {
-        if(oldLevel != level) {
-            oldLevel = level;
-            Bonus bonus = bonusPool.obtain();
-            Vector2 pos0 = new Vector2();
-            float posX = Rnd.nextFloat(worldBounds.getLeft() + bonus.getHalfWidth(), worldBounds.getRight() - bonus.getHalfWidth());
-            float posY = worldBounds.getTop() + bonus.getHeight();
-            pos0.set(posX, posY);
-            bonus.set(firstAidRegion, Bonus.BonusType.FIRST_AID, pos0);
-        }
-    }
-
-    public void reset() {
-        oldLevel = 1;
+    public void generate() {
+        Bonus bonus = bonusPool.obtain();
+        Vector2 pos0 = new Vector2();
+        float posX = Rnd.nextFloat(worldBounds.getLeft() + bonus.getHalfWidth(), worldBounds.getRight() - bonus.getHalfWidth());
+        float posY = worldBounds.getTop() + bonus.getHeight();
+        pos0.set(posX, posY);
+        bonus.set(firstAidRegion, Bonus.BonusType.FIRST_AID, pos0);
     }
 }

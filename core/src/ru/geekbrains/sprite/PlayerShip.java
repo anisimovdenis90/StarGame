@@ -11,6 +11,7 @@ import ru.geekbrains.base.Sprite;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletsPool;
 import ru.geekbrains.pool.ExplosionsPool;
+import ru.geekbrains.utils.GameLevel;
 
 public class PlayerShip extends Ship {
 
@@ -23,8 +24,8 @@ public class PlayerShip extends Ship {
     private static final int BULLET_DAMAGE = 1;
     private static final float SHOOT_INTERVAL = 0.25f;
     private static final float SUPER_SHOOT_TIME_LIMIT_MAX = 10f;
-    private static final float SUPER_SHOOT_SOUND_VOLUME = 0.45f;
-    private static final float SHOOT_SOUND_VOLUME = 0.8f;
+    private static final float SUPER_SHOOT_SOUND_VOLUME = 0.55f;
+    private static final float SHOOT_SOUND_VOLUME = 0.9f;
     private static final float DAMAGE_SOUND_VOLUME = 1.5f;
     private static final int INVALID_POINTER = -1;
 
@@ -42,10 +43,13 @@ public class PlayerShip extends Ship {
     private Sound superShootSound;
     private Sound damageSound;
 
-    public PlayerShip(TextureAtlas atlas, BulletsPool bulletsPool, ExplosionsPool explosionsPool) {
+    private GameLevel gameLevel;
+
+    public PlayerShip(TextureAtlas atlas, BulletsPool bulletsPool, ExplosionsPool explosionsPool, GameLevel gameLevel) {
         super(atlas.findRegion("playerShip"), 1, 3, 3);
         this.bulletsPool = bulletsPool;
         this.explosionsPool = explosionsPool;
+        this.gameLevel = gameLevel;
         bulletRegion = atlas.findRegion("bulletPlayerShip");
         bulletV = new Vector2(0, BULLET_V_Y);
         bulletV2 = new Vector2(-0.1f, BULLET_V_Y);
@@ -87,10 +91,14 @@ public class PlayerShip extends Ship {
     }
 
     public void addHealth() {
-        setAnimateTimer(0f);
-        frame = 2;
-        int newHp = hp + ADD_HP;
-        hp = Math.min(newHp, MAX_HP);
+        if (hp == MAX_HP) {
+            gameLevel.addScores(ADD_HP);
+        } else {
+            setAnimateTimer(0f);
+            frame = 2;
+            int newHp = hp + ADD_HP;
+            hp = Math.min(newHp, MAX_HP);
+        }
     }
 
     public void dispose() {

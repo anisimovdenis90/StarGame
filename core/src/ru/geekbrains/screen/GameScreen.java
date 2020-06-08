@@ -31,6 +31,7 @@ import ru.geekbrains.sprite.PlayerShip;
 import ru.geekbrains.sprite.Star;
 import ru.geekbrains.utils.BonusEmitter;
 import ru.geekbrains.utils.EnemyEmitter;
+import ru.geekbrains.utils.GameLevel;
 
 public class GameScreen extends BaseScreen {
 
@@ -48,7 +49,6 @@ public class GameScreen extends BaseScreen {
     private static final String HP = "HP: ";
     private static final String LEVEL = "Level: ";
 
-    private int scores;
     private Texture bg;
     private Background background;
     private TextureAtlas atlas;
@@ -74,6 +74,7 @@ public class GameScreen extends BaseScreen {
     private StringBuilder sbLevel;
     private BonusPool bonusPool;
     private BonusEmitter bonusEmitter;
+    private GameLevel gameLevel;
 
     public GameScreen() {
     }
@@ -101,12 +102,13 @@ public class GameScreen extends BaseScreen {
         }
         bulletsPool = new BulletsPool();
         explosionsPool = new ExplosionsPool(atlas);
-        enemysPool = new EnemysPool(bulletsPool, explosionsPool, worldBounds);
-        enemyEmitter = new EnemyEmitter(atlas, enemysPool);
-        playerShip = new PlayerShip(atlas, bulletsPool, explosionsPool);
-        healthBar = new HealthBar(atlas, playerShip);
         bonusPool = new BonusPool(worldBounds);
         bonusEmitter = new BonusEmitter(atlas, bonusPool);
+        gameLevel = new GameLevel(bonusEmitter, stars);
+        enemysPool = new EnemysPool(bulletsPool, explosionsPool, worldBounds);
+        enemyEmitter = new EnemyEmitter(atlas, enemysPool, gameLevel);
+        playerShip = new PlayerShip(atlas, bulletsPool, explosionsPool, gameLevel);
+        healthBar = new HealthBar(atlas, playerShip);
         gameOver = new GameOver(atlas);
         pause = new Pause(atlas);
         buttonNewGame = new ButtonNewGame(atlas, this);
@@ -229,15 +231,11 @@ public class GameScreen extends BaseScreen {
     }
 
     public void startNewGame() {
-        scores = 0;
         playerShip.reset();
         enemysPool.freeAllActiveObjects();
         bulletsPool.freeAllActiveObjects();
         bonusPool.freeAllActiveObjects();
-        for (Star star : stars) {
-            star.reset();
-        }
-        bonusEmitter.reset();
+        gameLevel.reset();
         music.setPosition(0f);
         state = State.PLAYING;
     }
@@ -274,7 +272,7 @@ public class GameScreen extends BaseScreen {
 
     private void update(float delta) {
         for (Star star : stars) {
-            star.update(delta, enemyEmitter.getLevel());
+            star.update(delta);
         }
         explosionsPool.updateActiveSprites(delta);
         if (state == State.PLAYING) {
@@ -282,9 +280,8 @@ public class GameScreen extends BaseScreen {
             healthBar.update(delta);
             bulletsPool.updateActiveSprites(delta);
             enemysPool.updateActiveSprites(delta);
-            enemyEmitter.generate(delta, scores);
+            enemyEmitter.generate(delta);
             bonusPool.updateActiveSprites(delta);
-            bonusEmitter.generate(enemyEmitter.getLevel());
         } else if (state == State.GAME_OVER) {
             buttonNewGame.update(delta);
         }
@@ -313,7 +310,7 @@ public class GameScreen extends BaseScreen {
                     bullet.destroy();
                     if (enemyShip.isDestroyed()) {
                         bonusEmitter.generate(enemyShip);
-                        scores += enemyShip.getScoresForKill();
+                        gameLevel.addScores(enemyShip.getScoresForKill());
                     }
                 }
             }
@@ -351,16 +348,16 @@ public class GameScreen extends BaseScreen {
         sbLevel.setLength(0);
         font.setSize(FONT_INFO_SIZE);
         font.draw(batch, sbHp.append(HP).append(playerShip.getHp()), worldBounds.getLeft() + 0.015f, worldBounds.getTop() - 0.037f);
-        font.draw(batch, sbLevel.append(LEVEL).append(enemyEmitter.getLevel()), worldBounds.getLeft() + 0.13f, worldBounds.getTop() - 0.038f);
+        font.draw(batch, sbLevel.append(LEVEL).append(gameLevel.getGameLevel()), worldBounds.getLeft() + 0.13f, worldBounds.getTop() - 0.038f);
         font.setSize(FONT_SCORES_SIZE);
-        font.draw(batch, sbScores.append(SCORES).append(scores), worldBounds.pos.x, worldBounds.getTop() - TEXT_MARGIN);
+        font.draw(batch, sbScores.append(SCORES).append(gameLevel.getScores()), worldBounds.pos.x, worldBounds.getTop() - TEXT_MARGIN);
     }
 
     private void printResult() {
         sbScores.setLength(0);
         sbLevel.setLength(0);
         font.setSize(FONT_RESULT_SIZE);
-        font.draw(batch, sbLevel.append(LEVEL).append(enemyEmitter.getLevel()), worldBounds.pos.x, worldBounds.getTop() - 0.1f, Align.center);
-        font.draw(batch, sbScores.append(SCORES).append(scores), worldBounds.pos.x, worldBounds.getTop() - 0.18f, Align.center);
+        font.draw(batch, sbLevel.append(LEVEL).append(gameLevel.getGameLevel()), worldBounds.pos.x, worldBounds.getTop() - 0.1f, Align.center);
+        font.draw(batch, sbScores.append(SCORES).append(gameLevel.getScores()), worldBounds.pos.x, worldBounds.getTop() - 0.18f, Align.center);
     }
 }

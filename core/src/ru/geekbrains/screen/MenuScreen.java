@@ -116,7 +116,7 @@ public class MenuScreen extends BaseScreen {
 
     private void update(float delta) {
         for (Star star : stars) {
-            star.update(delta, 1);
+            star.update(delta);
         }
     }
 }

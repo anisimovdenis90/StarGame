@@ -6,28 +6,29 @@ import com.badlogic.gdx.math.Vector2;
 import ru.geekbrains.base.Sprite;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.math.Rnd;
+import ru.geekbrains.utils.GameLevel;
 
 public class Star extends Sprite {
 
     private static final float HEIGHT = 0.01f;
     private static final float ANIMATION_SCALE_STEP = 0.008f;
 
+    private Vector2 v0;
     private Vector2 v;
     private Rect worldBounds;
 
     private float animateTimer;
     private float animateInterval;
 
-    private int oldLevel;
-
     public Star(TextureAtlas atlas) {
         super(atlas.findRegion("star"));
+        v0 = new Vector2();
         v = new Vector2();
         float vx = Rnd.nextFloat(-0.005f, 0.005f);
         float vy = Rnd.nextFloat(-0.2f, -0.05f);
-        v.set(vx, vy);
+        v0.set(vx, vy);
+        v.set(v0);
         worldBounds = new Rect();
-        oldLevel = 1;
     }
 
     @Override
@@ -40,23 +41,23 @@ public class Star extends Sprite {
         animateInterval = Rnd.nextFloat(0.5f, 2f);
     }
 
-    public void update(float delta, int newLevel) {
+    public void update(float delta) {
         setScale(getScale() - ANIMATION_SCALE_STEP);
         animateTimer += delta;
         if (animateTimer >= animateInterval) {
             setScale(1f);
             animateTimer = 0f;
         }
-        if (oldLevel != newLevel) {
-            oldLevel = newLevel;
-            v.y = v.y - (float) (oldLevel - 1) / 500;
-        }
         pos.mulAdd(v, delta);
         checkBounds();
     }
 
-    public void reset() {
-        oldLevel = 1;
+    public void addVy(int gameLevel) {
+        if (gameLevel == 1) {
+            v.set(v.x, v0.y);
+        } else {
+            v.y -= (float) (gameLevel - 1) / 500;
+        }
     }
 
     private void checkBounds() {

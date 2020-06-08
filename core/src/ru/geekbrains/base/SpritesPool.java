@@ -3,6 +3,7 @@ package ru.geekbrains.base;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class SpritesPool<T extends Sprite> {
@@ -67,8 +68,12 @@ public abstract class SpritesPool<T extends Sprite> {
 
     private void free(T object) {
         object.flushDestroy();
-        if (activeObjects.remove(object)) {
-            freeObjects.add(object);
+        Iterator<T> iterator = activeObjects.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().equals(object)) {
+                iterator.remove();
+                freeObjects.add(object);
+            }
         }
     }
 }
