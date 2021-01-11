@@ -6,9 +6,14 @@ import com.badlogic.gdx.math.Vector2;
 import ru.geekbrains.base.Sprite;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.math.Rnd;
+import ru.geekbrains.utils.GameLevel;
 
 public class Star extends Sprite {
 
+    private static final float HEIGHT = 0.01f;
+    private static final float ANIMATION_SCALE_STEP = 0.008f;
+
+    private Vector2 v0;
     private Vector2 v;
     private Rect worldBounds;
 
@@ -17,26 +22,27 @@ public class Star extends Sprite {
 
     public Star(TextureAtlas atlas) {
         super(atlas.findRegion("star"));
+        v0 = new Vector2();
         v = new Vector2();
         float vx = Rnd.nextFloat(-0.005f, 0.005f);
         float vy = Rnd.nextFloat(-0.2f, -0.05f);
-        v.set(vx, vy);
+        v0.set(vx, vy);
+        v.set(v0);
         worldBounds = new Rect();
     }
 
     @Override
     public void resize(Rect worldBounds) {
         this.worldBounds = worldBounds;
-        setHeightProportion(0.01f);
+        setHeightProportion(HEIGHT);
         float posX = Rnd.nextFloat(worldBounds.getLeft(), worldBounds.getRight());
         float posY = Rnd.nextFloat(worldBounds.getBottom(), worldBounds.getTop());
         pos.set(posX, posY);
         animateInterval = Rnd.nextFloat(0.5f, 2f);
     }
 
-    @Override
     public void update(float delta) {
-        setScale(getScale() - 0.008f);
+        setScale(getScale() - ANIMATION_SCALE_STEP);
         animateTimer += delta;
         if (animateTimer >= animateInterval) {
             setScale(1f);
@@ -44,6 +50,14 @@ public class Star extends Sprite {
         }
         pos.mulAdd(v, delta);
         checkBounds();
+    }
+
+    public void addVy(int gameLevel) {
+        if (gameLevel == 1) {
+            v.set(v.x, v0.y);
+        } else {
+            v.y -= (float) (gameLevel - 1) / 500;
+        }
     }
 
     private void checkBounds() {

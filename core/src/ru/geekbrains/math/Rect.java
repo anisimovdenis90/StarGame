@@ -29,16 +29,32 @@ public class Rect {
         return pos.x - halfWidth;
     }
 
+    public void setLeft(float left) {
+        pos.x = left + halfWidth;
+    }
+
     public float getTop() {
         return pos.y + halfHeight;
+    }
+
+    public void setTop(float top) {
+        pos.y = top - halfHeight;
     }
 
     public float getRight() {
         return pos.x + halfWidth;
     }
 
+    public void setRight(float right) {
+        pos.x = right - halfWidth;
+    }
+
     public float getBottom() {
         return pos.y - halfHeight;
+    }
+
+    public void setBottom(float bottom) {
+        pos.y = bottom + halfHeight;
     }
 
     public float getHalfWidth() {
@@ -53,38 +69,22 @@ public class Rect {
         return halfWidth * 2f;
     }
 
+    public void setWidth(float width) {
+        this.halfWidth = width / 2f;
+    }
+
     public float getHeight() {
         return halfHeight * 2f;
+    }
+
+    public void setHeight(float height) {
+        this.halfHeight = height / 2f;
     }
 
     public void set(Rect from) {
         pos.set(from.pos);
         halfWidth = from.halfWidth;
         halfHeight = from.halfHeight;
-    }
-
-    public void setLeft(float left) {
-        pos.x = left + halfWidth;
-    }
-
-    public void setTop(float top) {
-        pos.y = top - halfHeight;
-    }
-
-    public void setRight(float right) {
-        pos.x = right - halfWidth;
-    }
-
-    public void setBottom(float bottom) {
-        pos.y = bottom + halfHeight;
-    }
-
-    public void setWidth(float width) {
-        this.halfWidth = width / 2f;
-    }
-
-    public void setHeight(float height) {
-        this.halfHeight = height / 2f;
     }
 
     public void setSize(float width, float height) {

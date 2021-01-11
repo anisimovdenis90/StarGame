@@ -9,20 +9,21 @@ import ru.geekbrains.base.Sprite;
 public class Explosion extends Sprite {
 
     private static final float ANIMATE_INTERVAL = 0.017f;
+    private static final float EXPLOSION_SOUND_VOLUME = 0.4f;
 
     private float animateTimer;
 
     private Sound sound;
 
     public Explosion(TextureAtlas atlas, Sound sound) {
-        super(atlas.findRegion("explosion"), 9, 9, 74);
+        super(atlas.findRegion("explosion"), 6, 8, 46);
         this.sound = sound;
     }
 
     public void set(float height, Vector2 pos) {
         setHeightProportion(height);
         this.pos.set(pos);
-        sound.play();
+        sound.play(EXPLOSION_SOUND_VOLUME);
         frame = 0;
     }
 

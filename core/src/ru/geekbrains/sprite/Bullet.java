@@ -18,6 +18,15 @@ public class Bullet extends Sprite {
         v = new Vector2();
     }
 
+    public int getDamage() {
+        return damage;
+    }
+
+
+    public Sprite getOwner() {
+        return owner;
+    }
+
     public void set(Sprite owner, TextureRegion region, Vector2 pos0, Vector2 v0, float height, Rect worldBounds, int damage) {
         this.owner = owner;
         this.regions[0] = region;
@@ -34,14 +43,5 @@ public class Bullet extends Sprite {
         if (isOutside(worldBounds)) {
             destroy();
         }
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-
-    public Sprite getOwner() {
-        return owner;
     }
 }

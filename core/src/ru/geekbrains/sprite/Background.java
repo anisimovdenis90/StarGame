@@ -7,13 +7,15 @@ import ru.geekbrains.math.Rect;
 
 public class Background extends Sprite {
 
+    private static final float HEIGHT = 1f;
+
     public Background(Texture texture) {
         super(new TextureRegion(texture));
     }
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(1f);
+        setHeightProportion(HEIGHT);
         this.pos.set(worldBounds.pos);
     }
 }

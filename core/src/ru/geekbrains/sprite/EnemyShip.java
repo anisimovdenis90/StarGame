@@ -10,19 +10,39 @@ import ru.geekbrains.pool.ExplosionsPool;
 
 public class EnemyShip extends Ship {
 
+    public enum EnemyType {
+        SMALL,
+        MEDIUM,
+        BIG
+    }
+
+    private static final float SHOOT_SOUND_VOLUME = 0.6f;
+    private static final float MARGIN = 0.04f;
     private static final float V_Y = -0.3f;
+
+    private int scoresForKill;
+
+    private EnemyType enemyType;
 
     public EnemyShip(BulletsPool bulletsPool, ExplosionsPool explosionsPool, Rect worldBounds, Sound shootSound) {
         super(bulletsPool, explosionsPool, worldBounds, shootSound);
     }
 
+    public int getScoresForKill() {
+        return scoresForKill;
+    }
+
+    public EnemyType getType() {
+        return enemyType;
+    }
+
     @Override
     public void update(float delta) {
         super.update(delta);
-        if (getTop() <= worldBounds.getTop()) {
+        if (getTop() <= worldBounds.getTop() - MARGIN) {
             v.set(v0);
             bulletPos.set(pos.x, pos.y - getHalfHeight());
-            autoShoot(delta);
+            autoShoot(delta, SHOOT_SOUND_VOLUME);
         }
         if (getBottom() <= worldBounds.getBottom()) {
             destroy();
@@ -38,7 +58,9 @@ public class EnemyShip extends Ship {
             int bulletDamage,
             float shootInterval,
             int hp,
-            float height
+            float height,
+            int scores,
+            EnemyType enemyType
     ) {
         this.regions = regions;
         this.v0.set(v0);
@@ -51,6 +73,8 @@ public class EnemyShip extends Ship {
         this.hp = hp;
         setHeightProportion(height);
         this.v.set(0, V_Y);
+        this.scoresForKill = scores;
+        this.enemyType = enemyType;
     }
 
     public boolean isBulletCollision(Bullet bullet) {
